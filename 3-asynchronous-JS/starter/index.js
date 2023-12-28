@@ -19,22 +19,39 @@ const writeFilePro = (file, data) => {
   });
 };
 
-// promised which makes easier to read
-readFilePro(`${__dirname}/dog.txt`)
-  .then((data) => {
+// sync await
+const getDogPic = async () => {
+  try {
+    const data = await readFilePro(`${__dirname}/dog.txt`);
     console.log(`Breed: ${data}`);
-    return superagent.get(`https://dog.ceo/api/breed/${data}/images/random`);
-  })
-  .then((resp) => {
+    const resp = await superagent.get(
+      `https://dog.ceo/api/breed/${data}/images/random`
+    );
     console.log(resp.body.message);
-    return writeFilePro("dog-img.txt", resp.body.message);
-  })
-  .then(() => {
+    await writeFilePro("dog-img.txt", resp.body.message);
     console.log("Random dog image saved");
-  })
-  .catch((err) => {
+  } catch (err) {
     console.log(err.message);
-  });
+  }
+};
+getDogPic();
+
+// promised which makes easier to read
+// readFilePro(`${__dirname}/dog.txt`)
+//   .then((data) => {
+//     console.log(`Breed: ${data}`);
+//     return superagent.get(`https://dog.ceo/api/breed/${data}/images/random`);
+//   })
+//   .then((resp) => {
+//     console.log(resp.body.message);
+//     return writeFilePro("dog-img.txt", resp.body.message);
+//   })
+//   .then(() => {
+//     console.log("Random dog image saved");
+//   })
+//   .catch((err) => {
+//     console.log(err.message);
+//   });
 
 // callback hell
 // fs.readFile(`${__dirname}/dog.txt`, (err, data) => {
