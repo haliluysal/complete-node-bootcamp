@@ -10,7 +10,7 @@ fs.readFile(`${__dirname}/dog.txt`, (err, data) => {
       console.log(resp.body.message);
       fs.writeFile("dog-img.txt", resp.body.message, (err) => {
         if (err) return console.log(err.message);
-        if (err) console.log("saved file");
+        console.log("saved file");
       });
     });
 });
