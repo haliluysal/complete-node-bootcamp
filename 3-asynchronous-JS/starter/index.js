@@ -31,10 +31,33 @@ const getDogPic = async () => {
     await writeFilePro("dog-img.txt", resp.body.message);
     console.log("Random dog image saved");
   } catch (err) {
-    console.log(err.message);
+    console.log(err);
+    throw err;
   }
+  return "2: READY";
 };
-getDogPic();
+
+(async () => {
+  try {
+    console.log("1: will get dog pics");
+    const x = await getDogPic();
+    console.log(x);
+    console.log("3: done getting dog pics");
+  } catch (error) {
+    console.log("ERROR ☠️");
+  }
+})();
+
+// with then functions (again getting into callbacks)
+// console.log("1: will get dog pics");
+// getDogPic()
+//   .then((x) => {
+//     console.log(x);
+//     console.log("3: done getting dog pics");
+//   })
+//   .catch((err) => {
+//     console.log("ERROR ☠️");
+//   });
 
 // promised which makes easier to read
 // readFilePro(`${__dirname}/dog.txt`)
