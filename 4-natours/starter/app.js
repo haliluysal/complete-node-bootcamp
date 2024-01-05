@@ -65,21 +65,48 @@ app.post('/api/v1/tours', (req, resp) => {
   );
 });
 
-app.patch('/api/v1/tours/:id', (req, resp) => {
-  let tour = tours;
+app.patch('/api/v1/tours/:id?', (req, resp) => {
   if (req.params.id) {
     const id = req.params.id * 1;
-    tour = tours.find((el) => el.id === id);
-  }
-  if (tour) {
-    resp.status(200).json({
-      status: 'success',
-      data: { tour: '<updated tour>' },
-    });
+    const tour = tours.find((el) => el.id === id);
+    if (tour) {
+      resp.status(200).json({
+        status: 'success',
+        data: { tour: '<updated tour>' },
+      });
+    } else {
+      resp.status(404).json({
+        status: 'fail',
+        message: 'invalid id',
+      });
+    }
   } else {
     resp.status(404).json({
       status: 'fail',
-      message: 'invalid id',
+      message: 'missing id',
+    });
+  }
+});
+
+app.delete('/api/v1/tours/:id', (req, resp) => {
+  if (req.params.id) {
+    const id = req.params.id * 1;
+    const tour = tours.find((el) => el.id === id);
+    if (tour) {
+      resp.status(204).json({
+        status: 'success',
+        data: null,
+      });
+    } else {
+      resp.status(404).json({
+        status: 'fail',
+        message: 'invalid id',
+      });
+    }
+  } else {
+    resp.status(404).json({
+      status: 'fail',
+      message: 'missing id',
     });
   }
 });
