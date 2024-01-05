@@ -3,36 +3,23 @@ const express = require('express');
 
 const app = express();
 app.use(express.json()); // middleware, between request and response
-// app.get('/', (req, res) => {
-//   res.status(200).json({
-//     message: 'Hello from the server side!',
-//     app: 'Natours',
-//   });
-// });
-
-// app.post('/', (req, res) => {
-//   res.send('You can pos to this endpoint');
-// });
 
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
-// app.get('/api/v1/tours', (req, resp) => {
-//   resp.status(200).json({
-//     status: 'success',
-//     results: tours.length,
-//     data: {
-//       tours: tours,
-//     },
-//   });
-// });
 
-app.get('/api/v1/tours/:id?', (req, resp) => {
-  let tour = tours;
-  if (req.params.id) {
-    const id = req.params.id * 1;
-    tour = tours.find((el) => el.id === id);
-  }
+const getAllTours = (req, resp) => {
+  resp.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tours,
+    },
+  });
+};
+
+const getTour = (req, resp) => {
+  const tour = tours.find((el) => el.id === id);
   if (tour) {
     resp.status(200).json({
       status: 'success',
@@ -44,10 +31,9 @@ app.get('/api/v1/tours/:id?', (req, resp) => {
       message: 'invalid id',
     });
   }
-});
+};
 
-app.post('/api/v1/tours', (req, resp) => {
-  //   console.log(req.body);
+const createTour = (req, resp) => {
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
   tours.push(newTour);
@@ -63,9 +49,9 @@ app.post('/api/v1/tours', (req, resp) => {
       });
     }
   );
-});
+};
 
-app.patch('/api/v1/tours/:id?', (req, resp) => {
+const updateTour = (req, resp) => {
   if (req.params.id) {
     const id = req.params.id * 1;
     const tour = tours.find((el) => el.id === id);
@@ -86,9 +72,9 @@ app.patch('/api/v1/tours/:id?', (req, resp) => {
       message: 'missing id',
     });
   }
-});
+};
 
-app.delete('/api/v1/tours/:id', (req, resp) => {
+const deleteTour = (req, resp) => {
   if (req.params.id) {
     const id = req.params.id * 1;
     const tour = tours.find((el) => el.id === id);
@@ -109,7 +95,17 @@ app.delete('/api/v1/tours/:id', (req, resp) => {
       message: 'missing id',
     });
   }
-});
+};
+
+app.route('/api/v1/tours').get(getAllTours).post(createTour);
+app.route('/api/v1/tours/:id').get(getTour).patch(updateTour);
+app.route('/api/v1/tours/id?').delete(deleteTour);
+
+// app.get('/api/v1/tours', getAllTours);
+// app.get('/api/v1/tours/:id', getTour);
+// app.post('/api/v1/tours', createTour);
+// app.patch('/api/v1/tours/:id', updateTour);
+// app.delete('/api/v1/tours/:id?', deleteTour);
 
 const port = 3000;
 app.listen(port, () => {
