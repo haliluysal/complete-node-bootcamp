@@ -1,7 +1,11 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
+
+// MIDDLEWARES
+app.use(morgan('dev'));
 app.use(express.json()); // middleware, between request and response
 
 app.use((req, resp, next) => {
@@ -19,6 +23,7 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
+// ROUTE HANDLES
 const getAllTours = (req, resp) => {
   resp.status(200).json({
     status: 'success',
@@ -109,6 +114,7 @@ const deleteTour = (req, resp) => {
   }
 };
 
+// ROUTES
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
 // app.use((req, resp, next) => {
 //   // since it is coming after get all tours, it does not respond to get all tours.
@@ -126,6 +132,7 @@ app.route('/api/v1/tours/id?').delete(deleteTour);
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id?', deleteTour);
 
+// SERVER
 const port = 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}`);
