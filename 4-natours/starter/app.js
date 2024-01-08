@@ -4,6 +4,17 @@ const express = require('express');
 const app = express();
 app.use(express.json()); // middleware, between request and response
 
+app.use((req, resp, next) => {
+  console.log('Hello from the middleware ❤️');
+  //   never forget to use "next"
+  next();
+});
+
+app.use((req, resp, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
@@ -11,6 +22,7 @@ const tours = JSON.parse(
 const getAllTours = (req, resp) => {
   resp.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
     results: tours.length,
     data: {
       tours,
@@ -98,6 +110,13 @@ const deleteTour = (req, resp) => {
 };
 
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
+// app.use((req, resp, next) => {
+//   // since it is coming after get all tours, it does not respond to get all tours.
+//   // ORDER MATTERS FOR THE MIDDLEWARE
+//   console.log('Hello from the middleware ❤️');
+//   //   never forget to use "next"
+//   next();
+// });
 app.route('/api/v1/tours/:id').get(getTour).patch(updateTour);
 app.route('/api/v1/tours/id?').delete(deleteTour);
 
