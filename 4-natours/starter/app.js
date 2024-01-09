@@ -1,6 +1,7 @@
 const fs = require('fs');
 const express = require('express');
 const morgan = require('morgan');
+const exp = require('constants');
 
 const app = express();
 
@@ -114,17 +115,47 @@ const deleteTour = (req, resp) => {
   }
 };
 
+const getAllUsers = (req, resp) => {
+  resp.status(500).json({
+    staus: 'error',
+    message: "This route hasn't implemented yet.",
+  });
+};
+
+const getUser = (req, resp) => {
+  resp.status(500).json({
+    staus: 'error',
+    message: "This route hasn't implemented yet.",
+  });
+};
+
+const createUser = (req, resp) => {
+  resp.status(500).json({
+    staus: 'error',
+    message: "This route hasn't implemented yet.",
+  });
+};
+
+const updateUser = (req, resp) => {
+  resp.status(500).json({
+    staus: 'error',
+    message: "This route hasn't implemented yet.",
+  });
+};
+
 // ROUTES
-app.route('/api/v1/tours').get(getAllTours).post(createTour);
-// app.use((req, resp, next) => {
-//   // since it is coming after get all tours, it does not respond to get all tours.
-//   // ORDER MATTERS FOR THE MIDDLEWARE
-//   console.log('Hello from the middleware ❤️');
-//   //   never forget to use "next"
-//   next();
-// });
-app.route('/api/v1/tours/:id').get(getTour).patch(updateTour);
-app.route('/api/v1/tours/id?').delete(deleteTour);
+const tourRouter = express.Router(); // --> this is actually a middleware
+const userRouter = express.Router();
+
+tourRouter.route('/').get(getAllTours).post(createTour);
+tourRouter.route('/:id').get(getTour).patch(updateTour);
+tourRouter.route('/:id?').delete(deleteTour);
+
+userRouter.route('/').get(getAllUsers).post(createUser);
+userRouter.route('/:id').get(getUser).patch(updateUser);
+
+app.use('/api/v1/tours', tourRouter); // --> mounting new router on top of the previous
+app.use('/api/v1/users', userRouter);
 
 // app.get('/api/v1/tours', getAllTours);
 // app.get('/api/v1/tours/:id', getTour);
