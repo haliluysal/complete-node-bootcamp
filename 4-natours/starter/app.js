@@ -5,7 +5,7 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
 const app = express();
-
+// MIDDLEWARE
 app.use((req, resp, next) => {
   req.requestTime = new Date().toISOString();
   next();
@@ -15,6 +15,7 @@ app.use((req, resp, next) => {
 app.use(morgan('dev'));
 app.use(express.json()); // middleware, between request and response
 
+// 3) ROUTES
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
