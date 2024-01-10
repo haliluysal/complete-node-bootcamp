@@ -4,6 +4,24 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+const getTour = (val) => {
+  // this does not need to be exported
+  const id = val * 1;
+  return tours.find((el) => el.id === id);
+};
+
+exports.checkID = (req, resp, next, val) => {
+  tour = getTour(val);
+  if (!tour) {
+    return resp.status(404).json({
+      // returns on this middleware!
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+  next();
+};
+
 // ROUTE HANDLES
 exports.getAllTours = (req, resp) => {
   resp.status(200).json({
@@ -17,19 +35,11 @@ exports.getAllTours = (req, resp) => {
 };
 
 exports.getTour = (req, resp) => {
-  const id = req.params.id * 1;
-  const tour = tours.find((el) => el.id === id);
-  if (tour) {
-    resp.status(200).json({
-      status: 'success',
-      data: { tours: tour },
-    });
-  } else {
-    resp.status(404).json({
-      status: 'fail',
-      message: 'invalid id',
-    });
-  }
+  tour = getTour(req.params.id);
+  resp.status(200).json({
+    status: 'success',
+    data: { tours: tour },
+  });
 };
 
 exports.createTour = (req, resp) => {
@@ -51,47 +61,21 @@ exports.createTour = (req, resp) => {
 };
 
 exports.updateTour = (req, resp) => {
-  if (req.params.id) {
-    const id = req.params.id * 1;
-    const tour = tours.find((el) => el.id === id);
-    if (tour) {
-      resp.status(200).json({
-        status: 'success',
-        data: { tour: '<updated tour>' },
-      });
-    } else {
-      resp.status(404).json({
-        status: 'fail',
-        message: 'invalid id',
-      });
-    }
-  } else {
-    resp.status(404).json({
-      status: 'fail',
-      message: 'missing id',
+  tour = getTour(req.params.id);
+  if (tour) {
+    resp.status(200).json({
+      status: 'success',
+      data: { tour: '<updated tour>' },
     });
   }
 };
 
 exports.deleteTour = (req, resp) => {
-  if (req.params.id) {
-    const id = req.params.id * 1;
-    const tour = tours.find((el) => el.id === id);
-    if (tour) {
-      resp.status(204).json({
-        status: 'success',
-        data: null,
-      });
-    } else {
-      resp.status(404).json({
-        status: 'fail',
-        message: 'invalid id',
-      });
-    }
-  } else {
-    resp.status(404).json({
-      status: 'fail',
-      message: 'missing id',
+  tour = getTour(req.params.id);
+  if (tour) {
+    resp.status(204).json({
+      status: 'success',
+      data: null,
     });
   }
 };
