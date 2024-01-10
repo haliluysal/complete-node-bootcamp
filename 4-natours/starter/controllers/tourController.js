@@ -62,20 +62,16 @@ exports.createTour = (req, resp) => {
 
 exports.updateTour = (req, resp) => {
   tour = getTour(req.params.id);
-  if (tour) {
-    resp.status(200).json({
-      status: 'success',
-      data: { tour: '<updated tour>' },
-    });
-  }
+  resp.status(200).json({
+    status: 'success',
+    data: { tour: '<updated tour>' },
+  });
 };
 
 exports.deleteTour = (req, resp) => {
   tour = getTour(req.params.id);
-  if (tour) {
-    resp.status(204).json({
-      status: 'success',
-      data: null,
-    });
-  }
+  resp.status(204).json({
+    status: 'success',
+    data: null,
+  });
 };
