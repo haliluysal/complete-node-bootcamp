@@ -31,7 +31,7 @@ exports.checkBody = (req, resp, next) => {
   } else if (!req.body.name) {
     return resp.status(400).json({
       status: 'fail',
-      message: 'missing property: price',
+      message: 'missing property: name',
     });
   } else if (!req.body.price) {
     return resp.status(400).json({
