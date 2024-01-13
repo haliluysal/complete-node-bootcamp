@@ -22,6 +22,26 @@ exports.checkID = (req, resp, next, val) => {
   next();
 };
 
+exports.checkBody = (req, resp, next) => {
+  if (!req.body.name && !req.body.price) {
+    return resp.status(400).json({
+      status: 'fail',
+      message: 'missing properties: name, price',
+    });
+  } else if (!req.body.name) {
+    return resp.status(400).json({
+      status: 'fail',
+      message: 'missing property: price',
+    });
+  } else if (!req.body.price) {
+    return resp.status(400).json({
+      status: 'fail',
+      message: 'missing property: price',
+    });
+  }
+  next();
+};
+
 // ROUTE HANDLES
 exports.getAllTours = (req, resp) => {
   resp.status(200).json({
