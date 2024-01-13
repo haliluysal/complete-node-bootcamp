@@ -14,6 +14,7 @@ app.use((req, resp, next) => {
 // MIDDLEWARES
 app.use(morgan('dev'));
 app.use(express.json()); // middleware, between request and response
+app.use(express.static(`${__dirname}/public`));
 
 // 3) ROUTES
 app.use('/api/v1/tours', tourRouter);
