@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
+  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`),
 );
 
 const getTour = (val) => {
@@ -11,7 +11,7 @@ const getTour = (val) => {
 };
 
 exports.checkID = (req, resp, next, val) => {
-  tour = getTour(val);
+  const tour = getTour(val);
   if (!tour) {
     return resp.status(404).json({
       // returns on this middleware!
@@ -23,20 +23,18 @@ exports.checkID = (req, resp, next, val) => {
 };
 
 exports.checkBody = (req, resp, next) => {
+  let msg = '';
   if (!req.body.name && !req.body.price) {
-    return resp.status(400).json({
-      status: 'fail',
-      message: 'missing properties: name, price',
-    });
+    msg = 'missing properties: name, price';
   } else if (!req.body.name) {
-    return resp.status(400).json({
-      status: 'fail',
-      message: 'missing property: name',
-    });
+    msg = 'missing property: name';
   } else if (!req.body.price) {
+    msg = 'missing property: price';
+  }
+  if (msg !== '') {
     return resp.status(400).json({
       status: 'fail',
-      message: 'missing property: price',
+      message: msg,
     });
   }
   next();
@@ -55,7 +53,7 @@ exports.getAllTours = (req, resp) => {
 };
 
 exports.getTour = (req, resp) => {
-  tour = getTour(req.params.id);
+  const tour = getTour(req.params.id);
   resp.status(200).json({
     status: 'success',
     data: { tours: tour },
@@ -64,24 +62,23 @@ exports.getTour = (req, resp) => {
 
 exports.createTour = (req, resp) => {
   const newId = tours[tours.length - 1].id + 1;
-  const newTour = Object.assign({ id: newId }, req.body);
+  const newTour = { id: newId, ...req.body };
   tours.push(newTour);
   fs.writeFile(
     `${__dirname}/dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
-    (err) => {
+    () => {
       resp.status(201).json({
         status: 'success',
         data: {
           tour: newTour,
         },
       });
-    }
+    },
   );
 };
 
 exports.updateTour = (req, resp) => {
-  tour = getTour(req.params.id);
   resp.status(200).json({
     status: 'success',
     data: { tour: '<updated tour>' },
@@ -89,7 +86,6 @@ exports.updateTour = (req, resp) => {
 };
 
 exports.deleteTour = (req, resp) => {
-  tour = getTour(req.params.id);
   resp.status(204).json({
     status: 'success',
     data: null,
