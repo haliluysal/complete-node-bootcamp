@@ -12,7 +12,9 @@ app.use((req, resp, next) => {
 });
 
 // MIDDLEWARES
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 app.use(express.json()); // middleware, between request and response
 app.use(express.static(`${__dirname}/public`));
 
