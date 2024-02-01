@@ -36,6 +36,13 @@ exports.getAllTours = async (req, resp) => {
     const skip = (page - 1) * limit;
     query = query.skip(skip).limit(limit);
 
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      if (skip >= numTours) {
+        throw new Error('Page does not exist');
+      }
+    }
+
     const tours = await query;
 
     resp.status(200).json({
@@ -49,7 +56,7 @@ exports.getAllTours = async (req, resp) => {
   } catch (error) {
     resp.status(404).json({
       status: 'fail',
-      message: 'No tour to diplay',
+      message: error.message,
     });
   }
 };
