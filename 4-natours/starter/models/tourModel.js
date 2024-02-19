@@ -84,7 +84,7 @@ tourSchema.pre('save', function (next) {
 //   console.log('will save document');
 //   next();
 // });
-tourSchema.pre('find', function (next) {
+tourSchema.pre(/^find/, function (next) {
   this.find({
     secretTour: { $ne: true },
   });
